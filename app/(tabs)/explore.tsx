@@ -29,8 +29,9 @@ export default function TabTwoScreen() {
 
   // 광고 보고 해제
   const showRewardedAdAndUnlock = () => {
-  Alert.alert('알림', '광고 기능이 현재 비활성화되어 있습니다.');
-};
+    setIsUnlocked(true); // 광고 없이 바로 해제
+    };
+
 
   const callAnalysisAPI = async () => {
     if (!userId) return;
@@ -98,10 +99,11 @@ export default function TabTwoScreen() {
         )}
 
         <Button
-          title={isUnlocked ? '분석하기' : '광고 시청 후 이용 가능'}
+          title="분석하기"
           onPress={callAnalysisAPI}
           disabled={!isUnlocked || isLoading}
         />
+
 
         {isLoading && <ThemedText style={{ marginTop: 12 }}>분석 중...</ThemedText>}
 
