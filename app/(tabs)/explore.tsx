@@ -3,7 +3,6 @@ import * as Clipboard from 'expo-clipboard';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Share, TextInput } from 'react-native';
 // @ts-ignore
-import { AdMobRewarded } from 'expo-ads-admob';
 
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -26,32 +25,12 @@ export default function TabTwoScreen() {
     })();
   }, []);
 
-  // 광고 준비
-  useEffect(() => {
-    const prepareAd = async () => {
-      await AdMobRewarded.setAdUnitID('ca-app-pub-xxxxxxxxxxxxxxxx/zzzzzzzzzzzz');
-      await AdMobRewarded.requestAdAsync({ servePersonalizedAds: true });
-    };
-    prepareAd();
-  }, []);
+  
 
   // 광고 보고 해제
-  const showRewardedAdAndUnlock = async () => {
-    try {
-      await AdMobRewarded.showAdAsync();
-
-      AdMobRewarded.addEventListener('rewardedVideoUserDidEarnReward', async () => {
-        if (!userId) return;
-        await axios.post('http://localhost:8000/unlock', {
-          user_id: userId,
-        });
-        Alert.alert('🎉 감정 분석이 해제되었습니다!');
-        setIsUnlocked(true);
-      });
-    } catch (error) {
-      Alert.alert('광고 실패', '광고를 불러올 수 없습니다.');
-    }
-  };
+  const showRewardedAdAndUnlock = () => {
+  Alert.alert('알림', '광고 기능이 현재 비활성화되어 있습니다.');
+};
 
   const callAnalysisAPI = async () => {
     if (!userId) return;
@@ -61,7 +40,7 @@ export default function TabTwoScreen() {
     }
     try {
       setIsLoading(true);
-      const response = await axios.post('http://localhost:8000/analyze', {
+      const response = await axios.post('https://gnom-backend.onrender.com', {
         user_id: userId,
         message: message || '나는 너에게 실망했어',
         relationship: '전 연인',
@@ -76,7 +55,7 @@ export default function TabTwoScreen() {
 
   const handleShare = async (resultData: any) => {
     try {
-      const response = await axios.post('http://localhost:8000/share', {
+      const response = await axios.post('https://gnom-backend.onrender.com', {
         ...resultData,
         user_id: userId,
       });
