@@ -34,25 +34,28 @@ export default function TabTwoScreen() {
 
 
   const callAnalysisAPI = async () => {
-    if (!userId) return;
-    if (!isUnlocked) {
-      Alert.alert('해제 필요', '광고를 보고 감정 분석을 해제하세요.');
-      return;
-    }
-    try {
-      setIsLoading(true);
-      const response = await axios.post('https://gnom-backend.onrender.com/analyze', {
-        user_id: userId,
-        message: message || '나는 너에게 실망했어',
-        relationship: '전 연인',
-      });
-      setAnalysisResult(response.data.summary || '결과 없음');
-    } catch (error) {
-      Alert.alert('분석 실패', '네트워크 또는 서버 오류입니다.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  if (!userId) return;
+  if (!isUnlocked) {
+    Alert.alert('해제 필요', '광고를 보고 감정 분석을 해제하세요.');
+    return;
+  }
+  try {
+    setIsLoading(true);
+    const response = await axios.post('https://gnom-backend.onrender.com/analyze', {
+      user_id: userId,
+      message: message || '나는 너에게 실망했어',
+      relationship: '전 연인',
+    });
+
+    console.log('🧠 분석 응답:', response.data); // ✅ 로그 추가
+    setAnalysisResult(response.data.summary || '결과 없음');
+  } catch (error) {
+    console.error('❌ 분석 에러:', error); // ✅ 로그 추가
+    Alert.alert('분석 실패', '네트워크 또는 서버 오류입니다.');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleShare = async (resultData: any) => {
     try {
