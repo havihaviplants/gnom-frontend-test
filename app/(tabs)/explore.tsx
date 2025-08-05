@@ -94,7 +94,7 @@ export default function TabTwoScreen() {
             <ThemedText style={{ textAlign: 'center', marginBottom: 8 }}>
               🔒 분석 결과를 보려면 광고를 시청해 주세요
             </ThemedText>
-            <Button title="광고 시청하고 해제하기" onPress={showRewardedAdAndUnlock} />
+            <Button title="해제하기" onPress={showRewardedAdAndUnlock} />
           </ThemedView>
         )}
 
