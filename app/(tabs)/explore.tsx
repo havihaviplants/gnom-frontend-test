@@ -3,7 +3,6 @@ import * as Clipboard from 'expo-clipboard';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Share, TextInput } from 'react-native';
 // @ts-ignore
-
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -21,42 +20,54 @@ export default function TabTwoScreen() {
   useEffect(() => {
     (async () => {
       const id = await getUserId();
+      console.log("✅ userId:", id); // userId 확인용 로그
       setUserId(id);
     })();
   }, []);
 
-  
-
-  // 광고 보고 해제
+  // 광고 보고 해제 (현재는 바로 해제)
   const showRewardedAdAndUnlock = () => {
-    setIsUnlocked(true); // 광고 없이 바로 해제
-    };
+    setIsUnlocked(true);
+    Alert.alert("🔓 해제 완료", "분석 기능이 잠금 해제되었습니다.");
+  };
 
-
+  // 감정 분석 요청
   const callAnalysisAPI = async () => {
-  if (!userId) return;
-  if (!isUnlocked) {
-    Alert.alert('해제 필요', '광고를 보고 감정 분석을 해제하세요.');
-    return;
-  }
-  try {
-    setIsLoading(true);
-    const response = await axios.post('https://gnom-backend.onrender.com/analyze', {
-      user_id: userId,
-      message: message || '나는 너에게 실망했어',
-      relationship: '전 연인',
-    });
+    console.log("📡 '분석하기' 버튼 클릭됨");
 
-    console.log('🧠 분석 응답:', response.data); // ✅ 로그 추가
-    setAnalysisResult(response.data.summary || '결과 없음');
-  } catch (error) {
-    console.error('❌ 분석 에러:', error); // ✅ 로그 추가
-    Alert.alert('분석 실패', '네트워크 또는 서버 오류입니다.');
-  } finally {
-    setIsLoading(false);
-  }
-};
+    if (!userId) {
+      console.log("❌ userId 없음 - 요청 중단");
+      Alert.alert("오류", "유저 정보 로딩 중입니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
 
+    if (!isUnlocked) {
+      console.log("🔒 아직 해제 안 됨");
+      Alert.alert('해제 필요', '광고를 보고 감정 분석을 해제하세요.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      console.log("🚀 POST 요청 전송 중...");
+
+      const response = await axios.post('https://gnom-backend.onrender.com/analyze', {
+        user_id: userId,
+        message: message || '나는 너에게 실망했어',
+        relationship: '전 연인',
+      });
+
+      console.log('🧠 분석 응답:', response.data);
+      setAnalysisResult(response.data.summary || '결과 없음');
+    } catch (error: any) {
+      console.error('❌ 분석 에러:', error?.message || error);
+      Alert.alert('분석 실패', '서버 응답이 없거나 네트워크 문제입니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 결과 공유
   const handleShare = async (resultData: any) => {
     try {
       const response = await axios.post('https://gnom-backend.onrender.com/share', {
@@ -89,13 +100,26 @@ export default function TabTwoScreen() {
           value={message}
           onChangeText={setMessage}
           placeholder="감정을 입력해 주세요"
-          style={{ borderWidth: 1, borderColor: '#ccc', padding: 12, borderRadius: 8, marginBottom: 12 }}
+          style={{
+            borderWidth: 1,
+            borderColor: '#ccc',
+            padding: 12,
+            borderRadius: 8,
+            marginBottom: 12,
+          }}
         />
 
         {!isUnlocked && (
-          <ThemedView style={{ padding: 16, backgroundColor: '#f2f2f2', borderRadius: 8, marginBottom: 12 }}>
+          <ThemedView
+            style={{
+              padding: 16,
+              backgroundColor: '#f2f2f2',
+              borderRadius: 8,
+              marginBottom: 12,
+            }}
+          >
             <ThemedText style={{ textAlign: 'center', marginBottom: 8 }}>
-              🔒 분석 결과를 보려면 광고를 시청해 주세요
+              🔒 분석 결과 보기
             </ThemedText>
             <Button title="해제하기" onPress={showRewardedAdAndUnlock} />
           </ThemedView>
@@ -107,13 +131,17 @@ export default function TabTwoScreen() {
           disabled={!isUnlocked || isLoading}
         />
 
-
         {isLoading && <ThemedText style={{ marginTop: 12 }}>분석 중...</ThemedText>}
 
         {isUnlocked && analysisResult && (
           <ThemedView style={{ marginTop: 16 }}>
-            <ThemedText style={{ fontSize: 16, marginBottom: 8 }}>{analysisResult}</ThemedText>
-            <Button title="결과 공유하기" onPress={() => handleShare({ result: analysisResult })} />
+            <ThemedText style={{ fontSize: 16, marginBottom: 8 }}>
+              {analysisResult}
+            </ThemedText>
+            <Button
+              title="결과 공유하기"
+              onPress={() => handleShare({ result: analysisResult })}
+            />
           </ThemedView>
         )}
       </ThemedView>

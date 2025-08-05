@@ -17,9 +17,6 @@
       "package": "com.leehyodong.gnomfrontend",
       "versionCode": 1,
       "edgeToEdgeEnabled": true,
-      "config": {
-        "googleMobileAdsAppId": "ca-app-pub-3940256099942544~3347511713"
-      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -41,12 +38,6 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
-        }
-      ],
-      [
-        "react-native-google-mobile-ads",
-        {
-          "android_app_id": "ca-app-pub-3940256099942544~3347511713"
         }
       ]
     ],
