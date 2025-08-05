@@ -5,17 +5,17 @@ export const getUserId = async (): Promise<string> => {
   try {
     let id = await AsyncStorage.getItem('user_id');
 
-    if (!id) {
-      id = uuidv4();
-      await AsyncStorage.setItem('user_id', id);
-      console.log("🎯 새 userId 생성:", id);
-    } else {
-      console.log("✅ 기존 userId 로드:", id);
+    if (!id || typeof id !== 'string' || id.length < 10) {
+      const newId = uuidv4();
+      console.log('🎯 새 userId 생성:', newId);
+      await AsyncStorage.setItem('user_id', newId);
+      return newId;
     }
 
+    console.log('✅ 기존 userId 로드:', id);
     return id;
   } catch (error) {
-    console.error("❌ userId 로딩 실패:", error);
-    return ''; // 비어 있는 string을 리턴해서 앱 충돌 방지
+    console.error('❌ userId 로딩 실패:', error);
+    return ''; // 이 경우에도 분석 요청은 막힘
   }
 };
