@@ -41,7 +41,7 @@ export default function TabTwoScreen() {
     }
     try {
       setIsLoading(true);
-      const response = await axios.post('https://gnom-backend.onrender.com', {
+      const response = await axios.post('https://gnom-backend.onrender.com/analyze', {
         user_id: userId,
         message: message || '나는 너에게 실망했어',
         relationship: '전 연인',
@@ -56,7 +56,7 @@ export default function TabTwoScreen() {
 
   const handleShare = async (resultData: any) => {
     try {
-      const response = await axios.post('https://gnom-backend.onrender.com', {
+      const response = await axios.post('https://gnom-backend.onrender.com/share', {
         ...resultData,
         user_id: userId,
       });
