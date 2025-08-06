@@ -18,17 +18,17 @@ export default function TabTwoScreen() {
 
   // ✅ UUID 로딩
   useEffect(() => {
-    (async () => {
-      const id = await getUserId();
-      console.log("🌐 useEffect에서 받은 userId:", id);
-
-      if (!id || id.length < 10) {
-        console.warn("⚠️ userId가 유효하지 않음:", id);
-      }
-
+  (async () => {
+    const id = await getUserId();
+    if (id && id.length > 10) {
+      console.log("✅ userId 세팅:", id);
       setUserId(id);
-    })();
-  }, []);
+    } else {
+      console.warn("❌ 유효하지 않은 userId:", id);
+    }
+  })();
+}, []);
+
 
   // 광고 보고 해제 (현재는 바로 해제)
   const showRewardedAdAndUnlock = () => {
@@ -41,11 +41,11 @@ export default function TabTwoScreen() {
     console.log("📡 '분석하기' 버튼 클릭됨");
     console.log("🧾 현재 userId:", userId);
 
-    if (!userId || userId.length < 10) {
-      console.log("❌ userId가 null 또는 유효하지 않음 - 요청 중단");
-      Alert.alert("오류", "유저 정보 로딩 중입니다. 잠시 후 다시 시도해 주세요.");
-      return;
+   if (!userId || userId.length < 10) {
+      Alert.alert("유저 정보 오류", "유저 정보 로딩 중입니다. 잠시 후 다시 시도해 주세요.");
+    return;
     }
+
 
     if (!isUnlocked) {
       console.log("🔒 아직 해제 안 됨");
