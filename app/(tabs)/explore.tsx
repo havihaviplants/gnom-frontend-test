@@ -16,11 +16,16 @@ export default function TabTwoScreen() {
   const [analysisResult, setAnalysisResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // UUID 로딩
+  // ✅ UUID 로딩
   useEffect(() => {
     (async () => {
       const id = await getUserId();
-      console.log("✅ userId:", id); // userId 확인용 로그
+      console.log("🌐 useEffect에서 받은 userId:", id);
+
+      if (!id || id.length < 10) {
+        console.warn("⚠️ userId가 유효하지 않음:", id);
+      }
+
       setUserId(id);
     })();
   }, []);
@@ -31,12 +36,13 @@ export default function TabTwoScreen() {
     Alert.alert("🔓 해제 완료", "분석 기능이 잠금 해제되었습니다.");
   };
 
-  // 감정 분석 요청
+  // ✅ 감정 분석 요청
   const callAnalysisAPI = async () => {
     console.log("📡 '분석하기' 버튼 클릭됨");
+    console.log("🧾 현재 userId:", userId);
 
-    if (!userId) {
-      console.log("❌ userId 없음 - 요청 중단");
+    if (!userId || userId.length < 10) {
+      console.log("❌ userId가 null 또는 유효하지 않음 - 요청 중단");
       Alert.alert("오류", "유저 정보 로딩 중입니다. 잠시 후 다시 시도해 주세요.");
       return;
     }
